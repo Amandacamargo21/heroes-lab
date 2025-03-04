@@ -5,15 +5,19 @@ export const useHeroes = () => {
   const [heroes, setHeroes] = useState<Hero[]>([]);
   const [loading, setLoading] = useState<{ toggle: string | null }>({ toggle: null });
 
+  // Definindo fetchHeroes fora do useEffect
+  const fetchHeroes = async () => {
+    console.log("Log 1 - fetchHeroes iniciado");
+    try {
+      const data = await getHeroes();
+      console.log("Dados recebidos:", data);
+      setHeroes(data);
+    } catch (error) {
+      console.error("Erro ao buscar heróis:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchHeroes = async () => {
-      try {
-        const data = await getHeroes();
-        setHeroes(data);
-      } catch (error) {
-        console.error("Erro ao buscar heróis:", error);
-      }
-    };
     fetchHeroes();
   }, []);
 
@@ -33,5 +37,5 @@ export const useHeroes = () => {
     }
   };
 
-  return { heroes, loading, toggleStatus };
+  return { heroes, loading, toggleStatus, fetchHeroes };
 };

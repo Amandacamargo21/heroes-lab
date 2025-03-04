@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { createHero, Hero, uploadHeroImage } from "../services/heroService";
+import { createHero, Hero, uploadHeroImage, updateHero } from "../services/heroService";
 import "../assets/heroform.css";
 import avatarPlaceholder from "../assets/images/avatar-svgrepo-com.png";
 
 interface CreateHeroProps {
   onClose: () => void;
-  heroData?: Hero;
+  heroData?: Hero | null;
+  onSubmit: () => void; // Função chamada após criação ou edição
 }
 
-const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData }) => {
+const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData, onSubmit }) => {
   const [hero, setHero] = useState<Hero>(
     heroData ?? {
-      id: undefined, 
+      id: undefined,
       name: "",
       nickname: "",
       date_of_birth: new Date(),
       universe: "",
       main_power: "",
-      avatar_url: "", 
+      avatar_url: "",
       is_active: true,
     }
   );
-
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -32,7 +32,6 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     if (name === "date_of_birth") {
       setHero({ ...hero, date_of_birth: new Date(value) });
     } else {
@@ -42,10 +41,8 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData }) => {
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-
     const file = e.target.files[0];
     setUploading(true);
-
     try {
       const imageUrl = await uploadHeroImage(file);
       setHero({ ...hero, avatar_url: imageUrl });
@@ -59,25 +56,28 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!hero.avatar_url) {
       alert("Por favor, envie uma imagem antes de salvar.");
       return;
     }
 
-    await createHero(hero);
-    alert("Herói criado com sucesso!");
-    onClose();
+    if (heroData?.id) {
+      // Se for edição, atualiza o herói
+      await updateHero(hero);
+    } else {
+      // Caso contrário, cria um novo herói
+      await createHero(hero);
+    }
+
+    // Chama a função onSubmit para atualizar a lista de heróis
+    onSubmit();
   };
 
   return (
     <form onSubmit={handleSubmit} className="hero-form">
       <div className="avatar-container">
         <div className="avatar-preview">
-          <img 
-            src={hero.avatar_url || avatarPlaceholder } 
-            alt="Avatar" 
-          />
+          <img src={hero.avatar_url || avatarPlaceholder} alt="Avatar" />
         </div>
         <label className="change-avatar">
           <input type="file" accept="image/png, image/jpeg" onChange={handleImageUpload} />
@@ -86,51 +86,26 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData }) => {
       </div>
 
       <label className="text-start">Nome completo</label>
-      <input
-        name="name"
-        placeholder="Digite o nome completo"
-        value={hero.name}
-        onChange={handleChange}
-      />
+      <input name="name" placeholder="Digite o nome completo" value={hero.name} onChange={handleChange} />
 
       <label className="text-start">Nome de guerra</label>
-      <input
-        name="nickname"
-        placeholder="Digite o nome de guerra"
-        value={hero.nickname}
-        onChange={handleChange}
-      />
+      <input name="nickname" placeholder="Digite o nome de guerra" value={hero.nickname} onChange={handleChange} />
 
       <div className="form-group">
         <div>
           <label className="text-start">Data de nascimento</label>
-          <input
-            type="date"
-            name="date_of_birth"
-            value={hero.date_of_birth ? new Date(hero.date_of_birth).toISOString().split("T")[0] : ""}
-            onChange={handleChange}
-          />
+          <input type="date" name="date_of_birth" value={hero.date_of_birth ? new Date(hero.date_of_birth).toISOString().split("T")[0] : ""} onChange={handleChange} />
         </div>
         <div>
           <label className="text-start">Universo</label>
-          <input
-            name="universe"
-            placeholder="Digite o universo"
-            value={hero.universe}
-            onChange={handleChange}
-          />
+          <input name="universe" placeholder="Digite o universo" value={hero.universe} onChange={handleChange} />
         </div>
       </div>
 
       <div className="form-group">
         <div>
           <label className="text-start">Habilidade</label>
-          <input
-            name="main_power"
-            placeholder="Digite a habilidade"
-            value={hero.main_power}
-            onChange={handleChange}
-          />
+          <input name="main_power" placeholder="Digite a habilidade" value={hero.main_power} onChange={handleChange} />
         </div>
       </div>
 
@@ -141,7 +116,7 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData }) => {
           Cancelar
         </button>
         <button type="submit" className="save-button" disabled={uploading}>
-          Salvar
+          {heroData ? "Atualizar" : "Salvar"}
         </button>
       </div>
     </form>

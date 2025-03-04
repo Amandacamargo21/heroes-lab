@@ -53,3 +53,10 @@ export const toggleHeroStatus = async (id: string, status: boolean): Promise<boo
     }
     
 };
+
+// Atualiza um herói
+export const updateHero = async (hero: Hero) => {
+    const response = await api.put(`/heroes/${hero.id}`, hero); 
+    return response.data;
+  };
+  

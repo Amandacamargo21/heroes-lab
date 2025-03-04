@@ -4,16 +4,17 @@ import { FaTrash, FaEdit } from "react-icons/fa";
 import { MdMoreVert } from "react-icons/md";
 
 interface HeroCardProps {
+  key: string;
   hero: Hero;
-  onClick: () => void;
-  onEdit: (hero: Hero) => void;
-  onDelete: (id: string) => void;
-  onToggleActive: (id: string, isActive: boolean) => void;
+  onClick: () => void;  
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;  
+  onToggleActive: (id: string, newStatus: boolean) => void;
   onActivate: (hero: Hero) => void;
-  menuOpen: boolean; 
   onMenuToggle: () => void;
-  loadingToggle: string | null;
-  loadingActivate: string | null;
+  menuOpen: boolean;
+  loadingToggle: string | undefined; 
+  loadingActivate: boolean;
 }
 
 const HeroCard: React.FC<HeroCardProps> = ({
@@ -64,7 +65,7 @@ const HeroCard: React.FC<HeroCardProps> = ({
                 className="menu-item edit"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onEdit(hero);
+                  onEdit(hero.id ?? "");
                 }}
                 disabled={!hero.is_active}
                 title="Editar Herói"
@@ -81,7 +82,11 @@ const HeroCard: React.FC<HeroCardProps> = ({
                 type="checkbox"
                 checked={hero.is_active}
                 disabled={loadingToggle === hero.id}
-                onChange={() => (hero.is_active ? onToggleActive(hero.id ?? "", false) : onActivate(hero))}
+                onChange={() =>
+                  hero.is_active
+                    ? onToggleActive(hero.id ?? "", false)
+                    : onActivate(hero)
+                }
               />
               <span className="slider"></span>
             </label>
