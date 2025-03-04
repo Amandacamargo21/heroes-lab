@@ -2,7 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database";
 
 class Hero extends Model {
-  public id!: number;
+  public id!: string;
   public name!: string;
   public nickname!: string;
   public date_of_birth!: Date;
@@ -15,9 +15,10 @@ class Hero extends Model {
 Hero.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID, 
+      defaultValue: DataTypes.UUIDV4, 
       primaryKey: true,
-      autoIncrement: true,
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING,

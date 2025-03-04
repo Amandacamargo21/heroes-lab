@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "curiti21",
+    "database": "hero_lab",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "curiti21",
+    "database": "hero_lab_test",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "curiti21",
+    "database": "hero_lab_prod",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}

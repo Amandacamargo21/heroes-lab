@@ -1,26 +1,27 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     // Criação da tabela 'heroes'
-    await queryInterface.createTable('heroes', {
+    await queryInterface.createTable("heroes", {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4, 
+        allowNull: false,
         primaryKey: true,
-        autoIncrement: true, 
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false, 
+        allowNull: false,
       },
       nickname: {
         type: Sequelize.STRING,
-        allowNull: false, 
+        allowNull: false,
       },
       date_of_birth: {
         type: Sequelize.DATE,
-        allowNull: false, 
+        allowNull: false,
       },
       universe: {
         type: Sequelize.STRING,
@@ -32,26 +33,26 @@ module.exports = {
       },
       avatar_url: {
         type: Sequelize.STRING,
-        allowNull: false, 
+        allowNull: false,
       },
       is_active: {
         type: Sequelize.BOOLEAN,
-        defaultValue: true, 
+        defaultValue: true,
       },
       createdAt: {
         type: Sequelize.DATE,
-        allowNull: false, 
-        defaultValue: Sequelize.NOW, 
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
-        allowNull: false, 
+        allowNull: false,
         defaultValue: Sequelize.NOW,
       },
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('heroes');
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("heroes");
+  },
 };
