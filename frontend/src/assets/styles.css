@@ -16,6 +16,9 @@ body {
   text-align: center;
   padding: 20px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Título */
@@ -39,7 +42,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  width: 100%;
+  width: 70rem;
   margin-bottom: 20px;
 }
 
@@ -100,10 +103,10 @@ body {
 /* Lista de heróis */
 .hero-cards-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   gap: 3rem;
   flex-wrap: wrap;
-  width: 100%;
+  width: 70rem;
 }
 
 .hero-card:first-child {
@@ -380,12 +383,12 @@ input:checked + .slider::before {
 .hero-card.inactive .menu-item {
   opacity: 0.5;
   cursor: not-allowed;
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 .hero-card.inactive .menu-item.toggle {
   opacity: 1;
-  pointer-events: all; 
+  pointer-events: all;
   cursor: pointer;
 }
 
@@ -399,9 +402,9 @@ input:checked + .slider::before {
 }
 
 .switch input:checked + .slider {
-  background-color: #4caf50; 
+  background-color: #4caf50;
 }
 
 .switch input:not(:checked) + .slider {
-  background-color: #f32620; 
+  background-color: #f32620;
 }
