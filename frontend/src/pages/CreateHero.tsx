@@ -1,24 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createHero, Hero, uploadHeroImage } from "../services/heroService";
-import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import "../assets/heroform.css";
+import avatarPlaceholder from "../assets/images/avatar-svgrepo-com.png";
 
 interface CreateHeroProps {
   onClose: () => void;
+  heroData?: Hero;
 }
 
-const CreateHero: React.FC<CreateHeroProps> = ({ onClose }) => {
-  const [hero, setHero] = useState<Hero>({
-    name: "",
-    nickname: "",
-    date_of_birth: new Date(),
-    universe: "",
-    main_power: "",
-    avatar_url: "",
-    is_active: true,
-  });
+const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData }) => {
+  const [hero, setHero] = useState<Hero>(
+    heroData ?? {
+      id: undefined, 
+      name: "",
+      nickname: "",
+      date_of_birth: new Date(),
+      universe: "",
+      main_power: "",
+      avatar_url: "", 
+      is_active: true,
+    }
+  );
 
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    if (heroData) {
+      setHero(heroData);
+    }
+  }, [heroData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,7 +40,6 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose }) => {
     }
   };
 
-  // Upload da imagem antes de salvar
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
 
@@ -48,7 +57,6 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose }) => {
     }
   };
 
-  // Salvar herói no banco
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -64,10 +72,24 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose }) => {
 
   return (
     <form onSubmit={handleSubmit} className="hero-form">
+      <div className="avatar-container">
+        <div className="avatar-preview">
+          <img 
+            src={hero.avatar_url || avatarPlaceholder } 
+            alt="Avatar" 
+          />
+        </div>
+        <label className="change-avatar">
+          <input type="file" accept="image/png, image/jpeg" onChange={handleImageUpload} />
+          {heroData ? "Alterar imagem" : "Escolher imagem"}
+        </label>
+      </div>
+
       <label className="text-start">Nome completo</label>
       <input
         name="name"
         placeholder="Digite o nome completo"
+        value={hero.name}
         onChange={handleChange}
       />
 
@@ -75,6 +97,7 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose }) => {
       <input
         name="nickname"
         placeholder="Digite o nome de guerra"
+        value={hero.nickname}
         onChange={handleChange}
       />
 
@@ -82,11 +105,9 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose }) => {
         <div>
           <label className="text-start">Data de nascimento</label>
           <input
-            type="text"
+            type="date"
             name="date_of_birth"
-            placeholder="Digite a data"
-            onFocus={(e) => (e.target.type = "date")}
-            onBlur={(e) => e.target.value === "" && (e.target.type = "text")}
+            value={hero.date_of_birth ? new Date(hero.date_of_birth).toISOString().split("T")[0] : ""}
             onChange={handleChange}
           />
         </div>
@@ -95,6 +116,7 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose }) => {
           <input
             name="universe"
             placeholder="Digite o universo"
+            value={hero.universe}
             onChange={handleChange}
           />
         </div>
@@ -106,24 +128,9 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose }) => {
           <input
             name="main_power"
             placeholder="Digite a habilidade"
+            value={hero.main_power}
             onChange={handleChange}
           />
-        </div>
-        <div>
-          <label className="text-start">Avatar</label>
-          <input
-            type="file"
-            accept="image/png, image/jpeg"
-            onChange={handleImageUpload}
-          />
-          {uploading && <p>Enviando imagem...</p>}
-          {hero.avatar_url && (
-            <img
-              src={hero.avatar_url}
-              alt="Avatar"
-              className="avatar-preview"
-            />
-          )}
         </div>
       </div>
 

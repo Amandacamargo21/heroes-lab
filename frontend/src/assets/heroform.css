@@ -9,7 +9,6 @@
 .hero-form label {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
   margin-bottom: 5px;
   display: block;
 }
@@ -52,35 +51,6 @@
   margin-top: 15px;
 }
 
-/* Botão de cancelar */
-.cancel-button {
-  background: white;
-  border: 1px solid #ccc;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.cancel-button:hover {
-  background: #f1f1f1;
-}
-
-/* Botão de salvar */
-.save-button {
-  background: #001f8d;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.save-button:hover {
-  background: #002bb8;
-}
-
 /* Responsividade para telas menores */
 @media (max-width: 600px) {
   .form-group {
@@ -89,3 +59,46 @@
   }
 }
 
+/* Avatar acima do formulário */
+.avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Estilização do avatar */
+.avatar-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #001f8d;
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Botão para alterar avatar */
+.change-avatar {
+  background: #001f8d;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-block;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.change-avatar:hover {
+  background: #002bb8;
+}
+
+.change-avatar input {
+  display: none;
+}

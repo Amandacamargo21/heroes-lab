@@ -159,19 +159,33 @@ export const deleteHero = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-// Ativar herói
-export const activateHero = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+// Alternar status ativo/inativo do herói
+export const toggleHeroStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { id } = req.params;
+    const { is_active } = req.body;
+
+    console.log(`Recebido ID: ${id} - Novo Status: ${is_active}`);
+
+    if (typeof is_active !== "boolean") {
+      res.status(400).json({ message: "O campo is_active precisa ser um booleano!" });
+      return;
+    }
+
     const hero = await Hero.findByPk(id);
     if (!hero) {
       res.status(404).json({ message: "Herói não encontrado!" });
       return;
     }
 
-    await hero.update({ is_active: true });
-    res.status(200).json({ message: "Herói ativado!" });
+    hero.is_active = is_active;
+    await hero.save();
+
+    console.log(`Status atualizado: ${hero.is_active}`);
+    res.status(200).json({ message: "Status atualizado com sucesso!", hero });
   } catch (error) {
-    next(error);
+    console.error("Erro ao atualizar status do herói:", error);
+    res.status(500).json({ message: "Erro interno no servidor" });
   }
+
 };

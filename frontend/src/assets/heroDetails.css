@@ -1,45 +1,61 @@
-.hero-details {
+.hero-details-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     padding: 20px;
+    position: relative;
   }
   
-  .hero-avatar img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: 15px 0;
-  }
-  
-  .hero-info {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    text-align: left;
-    margin-top: 20px;
-  }
-  
-  .hero-info div {
-    width: 48%;
-    font-size: 14px;
+  .hero-details h2 {
+    font-size: 22px;
+    font-weight: bold;
     margin-bottom: 10px;
   }
   
-  .hero-info strong {
+  .hero-avatar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f1f1f1;
+    margin-bottom: 15px;
+  }
+  
+  .hero-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 20px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center; 
+    margin-top: 1rem;
+  }
+  
+  .hero-info label {
     font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .hero-info span {
+    display: block;
+    font-size: 16px;
+    color: #333;
   }
   
   .close-modal-button {
-    margin-top: 20px;
-    background-color: #001f8d;
-    color: white;
-    padding: 10px 15px;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 8px 15px;
     border-radius: 5px;
-    border: none;
     cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background 0.2s ease-in-out;
   }
   
   .close-modal-button:hover {
-    background-color: #002bb8;
+    background: #f5f5f5;
   }
   

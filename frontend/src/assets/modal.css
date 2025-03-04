@@ -71,6 +71,19 @@
   background: #f1f1f1;
 }
 
+.delete-button{
+  background: #da0404;
+  color: #fff;
+  border: 1px solid #ccc;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background: #b30404;
+}
+
 .save-button {
   background: #001f8d;
   color: white;

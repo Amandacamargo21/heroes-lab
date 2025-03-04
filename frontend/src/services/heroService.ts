@@ -1,7 +1,7 @@
 import api from "./api";
 
 export interface Hero {
-    id?: number;
+    id?: string;
     name: string;
     nickname: string;
     date_of_birth: Date;
@@ -35,4 +35,21 @@ export const uploadHeroImage = async (file: File): Promise<string> => {
     });
 
     return response.data.fileUrl; 
+};
+
+// Exclui um herói pelo ID
+export const deleteHero = async (id: string): Promise<void> => {
+    await api.delete(`/heroes/${id}`);
+};
+
+// Ativa ou desativa um herói
+export const toggleHeroStatus = async (id: string, status: boolean): Promise<boolean> => {
+    try {
+        const response = await api.patch(`/heroes/${id}/toggle-status`, { is_active: status });
+        return response.data.hero.is_active;
+    } catch (error) {
+        console.error("Erro ao alternar status do herói:", error);
+        return !status;
+    }
+    
 };
