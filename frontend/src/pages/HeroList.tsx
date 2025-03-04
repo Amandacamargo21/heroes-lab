@@ -53,7 +53,7 @@ const HeroList: React.FC = () => {
     <div className="hero-list-container">
       <h2 className="hero-title">Heróis</h2>
 
-      {/* 🔍 Barra de busca e botão Criar */}
+      <div className="hero-content-wrapper">
       <div className="search-container">
         <button className="create-button">Criar</button>
         <input
@@ -91,6 +91,8 @@ const HeroList: React.FC = () => {
       ) : (
         <div className="no-heroes-message">Nenhum herói encontrado.</div>
       )}
+      </div>
+      
 
       {/* 🔄 Paginação */}
       {totalPages > 1 && (
