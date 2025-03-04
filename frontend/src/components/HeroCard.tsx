@@ -6,38 +6,40 @@ import { MdMoreVert } from "react-icons/md";
 interface HeroCardProps {
   key: string;
   hero: Hero;
-  onClick: () => void;  
+  onClick: () => void;
   onEdit: (id: string) => void;
-  onDelete: (id: string) => void;  
-  onToggleActive: (id: string, newStatus: boolean) => void;
-  onActivate: (hero: Hero) => void;
+  onDelete: (id: string) => void;
+  onSliderToggle: (hero: Hero) => void;
   onMenuToggle: () => void;
   menuOpen: boolean;
-  loadingToggle: string | undefined; 
+  loadingToggle: string | undefined;
   loadingActivate: boolean;
 }
 
 const HeroCard: React.FC<HeroCardProps> = ({
   hero,
   onClick,
-  onDelete,
   onEdit,
-  onToggleActive,
-  onActivate,
+  onDelete,
+  onSliderToggle,
+  onMenuToggle,
+  menuOpen,
   loadingToggle,
+  loadingActivate,
 }) => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [localMenuOpen, setLocalMenuOpen] = useState(false);
 
   const handleMenuToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setMenuOpen((prev) => !prev);
+    setLocalMenuOpen((prev) => !prev);
+    onMenuToggle();
   };
 
   return (
     <div className={`hero-card ${hero.is_active ? "" : "inactive"}`} onClick={onClick}>
       {/* Botão de Menu */}
       <button
-        className={`menu-button ${menuOpen ? "menu-active" : ""}`}
+        className={`menu-button ${localMenuOpen ? "menu-active" : ""}`}
         onClick={handleMenuToggle}
         title="Abrir menu"
       >
@@ -45,9 +47,8 @@ const HeroCard: React.FC<HeroCardProps> = ({
       </button>
 
       {/* Dropdown do Menu */}
-      {menuOpen && (
+      {localMenuOpen && (
         <div className="menu-dropdown">
-          {/* Botões de Edição e Exclusão */}
           {hero.is_active && (
             <>
               <button
@@ -74,19 +75,13 @@ const HeroCard: React.FC<HeroCardProps> = ({
               </button>
             </>
           )}
-
-          {/* Toggle de Ativação */}
           <div className="menu-item toggle">
             <label className="switch">
               <input
                 type="checkbox"
                 checked={hero.is_active}
                 disabled={loadingToggle === hero.id}
-                onChange={() =>
-                  hero.is_active
-                    ? onToggleActive(hero.id ?? "", false)
-                    : onActivate(hero)
-                }
+                onChange={() => onSliderToggle(hero)}
               />
               <span className="slider"></span>
             </label>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Hero } from "../services/heroService";
+import { Hero, deleteHero } from "../services/heroService";
 import HeroCard from "../components/HeroCard";
 import Modal from "../components/Modal";
 import CreateHero from "./CreateHero";
@@ -7,10 +7,10 @@ import { useHeroes } from "../hooks/useHeroes";
 import "../assets/styles.css";
 
 const HeroList: React.FC = () => {
-  // Obtemos os heróis, o loading e a função para atualizar a lista do hook
+  // Obtemos os heróis, loading, e as funções do hook
   const { heroes, loading, toggleStatus, fetchHeroes } = useHeroes();
 
-  // Estados para modais e edição/ativação
+  // Estados para modais e operações
   const [heroToActivate, setHeroToActivate] = useState<Hero | null>(null);
   const [isActivateModalOpen, setIsActivateModalOpen] = useState<boolean>(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -23,7 +23,11 @@ const HeroList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const heroesPerPage = 10;
 
-  // Filtrando os heróis pelo termo de busca (usa nickname)
+  // Estados para exclusão
+  const [heroToDelete, setHeroToDelete] = useState<Hero | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+
+  // Filtra os heróis pelo termo de busca (usando nickname)
   const filteredHeroes = heroes.filter((hero) =>
     hero.nickname.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -34,25 +38,26 @@ const HeroList: React.FC = () => {
   const currentHeroes = filteredHeroes.slice(indexOfFirstHero, indexOfLastHero);
   const totalPages = Math.ceil(filteredHeroes.length / heroesPerPage);
 
-  // Função para alternar o status do herói (ativa/desativa)
-  const handleToggleStatus = (id: string, isActive: boolean) => {
-    if (!isActive) {
-      const hero = heroes.find((h) => h.id === id);
-      if (hero) {
-        setHeroToActivate(hero);
-        setIsActivateModalOpen(true);
-      }
+  // Função unificada para ativação/desativação via slider:
+  // Se o herói estiver ativado, desativa imediatamente;
+  // Se estiver desativado, abre a modal para confirmar ativação.
+  const handleSliderToggle = (hero: Hero) => {
+    if (hero.is_active) {
+      // Desativa imediatamente
+      toggleStatus(hero.id ?? "", false);
     } else {
-      toggleStatus(id, false);
+      // Abre modal para confirmar ativação
+      setHeroToActivate(hero);
+      setIsActivateModalOpen(true);
     }
   };
 
-  // Função para alternar o menu aberto para cada herói
+  // Alterna o menu aberto para cada herói
   const handleMenuToggle = (id: string) => {
     setOpenMenuId((prev) => (prev === id ? null : id));
   };
 
-  // Confirmação para ativar um herói
+  // Confirma ativação de herói (na modal)
   const confirmActivateHero = async () => {
     if (heroToActivate?.id) {
       toggleStatus(heroToActivate.id, true);
@@ -81,6 +86,22 @@ const HeroList: React.FC = () => {
     setIsCreateHeroModalOpen(false);
   };
 
+  // Abre a modal de exclusão
+  const handleDeleteHero = (hero: Hero) => {
+    setHeroToDelete(hero);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Confirma a exclusão
+  const confirmDeleteHero = async () => {
+    if (heroToDelete?.id) {
+      await deleteHero(heroToDelete.id);
+      await fetchHeroes();
+      setIsDeleteModalOpen(false);
+      setHeroToDelete(null);
+    }
+  };
+
   return (
     <div className="hero-list-container">
       <h2 className="hero-title">Heróis</h2>
@@ -105,9 +126,7 @@ const HeroList: React.FC = () => {
         </div>
 
         {/* Indicador de carregamento */}
-        {isLoading ? (
-          <div className="loading-indicator">Carregando...</div>
-        ) : null}
+        {isLoading && <div className="loading-indicator">Carregando...</div>}
 
         {/* Lista de Heróis */}
         {currentHeroes.length > 0 ? (
@@ -118,13 +137,10 @@ const HeroList: React.FC = () => {
                 hero={hero}
                 onClick={() => {}}
                 onEdit={() => handleEditHero(hero)}
-                onDelete={() => {}}
-                onToggleActive={() =>
-                  handleToggleStatus(hero.id ?? "", hero.is_active)
-                }
-                onActivate={confirmActivateHero}
-                menuOpen={openMenuId === hero.id}
+                onDelete={() => handleDeleteHero(hero)}
+                onSliderToggle={() => handleSliderToggle(hero)}
                 onMenuToggle={() => handleMenuToggle(hero.id ?? "")}
+                menuOpen={openMenuId === hero.id}
                 loadingToggle={loading.toggle ?? ""}
                 loadingActivate={false}
               />
@@ -186,6 +202,28 @@ const HeroList: React.FC = () => {
           </button>
           <button className="activate-button" onClick={confirmActivateHero}>
             Confirmar Ativação
+          </button>
+        </div>
+      </Modal>
+
+      {/* Modal para confirmar exclusão */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      >
+        <h4 className="text-start">Excluir Herói</h4>
+        <hr />
+        <span>Tem certeza que deseja excluir {heroToDelete?.name}?</span>
+        <hr />
+        <div className="form-buttons">
+          <button
+            className="cancel-button"
+            onClick={() => setIsDeleteModalOpen(false)}
+          >
+            Cancelar
+          </button>
+          <button className="delete-button" onClick={confirmDeleteHero}>
+            Confirmar Exclusão
           </button>
         </div>
       </Modal>

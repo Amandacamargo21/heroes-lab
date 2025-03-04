@@ -7,10 +7,8 @@ export const useHeroes = () => {
 
   // Definindo fetchHeroes fora do useEffect
   const fetchHeroes = async () => {
-    console.log("Log 1 - fetchHeroes iniciado");
     try {
       const data = await getHeroes();
-      console.log("Dados recebidos:", data);
       setHeroes(data);
     } catch (error) {
       console.error("Erro ao buscar heróis:", error);
@@ -22,8 +20,6 @@ export const useHeroes = () => {
   }, []);
 
   const toggleStatus = async (id: string, isActive: boolean) => {
-    if (!isActive) return;
-
     setLoading((prev) => ({ ...prev, toggle: id }));
     try {
       const updatedStatus = await toggleHeroStatus(id, isActive);
