@@ -84,6 +84,19 @@
   background: #b30404;
 }
 
+.activate-button{
+  background: #4caf50;
+  color: #fff;
+  border: 1px solid #ccc;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.activate-button:hover {
+  background: #3c8d3f;
+}
+
 .save-button {
   background: #001f8d;
   color: white;

@@ -3,12 +3,13 @@ import { Hero, deleteHero } from "../services/heroService";
 import HeroCard from "../components/HeroCard";
 import Modal from "../components/Modal";
 import CreateHero from "./CreateHero";
-import HeroDetails from "../components/HeroDetails"; // Importe o HeroDetails
+import HeroDetails from "../components/HeroDetails"; // Importa o HeroDetails
 import { useHeroes } from "../hooks/useHeroes";
 import "../assets/styles.css";
+import { toast } from "react-toastify";
 
 const HeroList: React.FC = () => {
-  // Obtemos os heróis, loading, e as funções do hook
+  // Obtemos os heróis, loading e as funções do hook
   const { heroes, loading, toggleStatus, fetchHeroes } = useHeroes();
 
   // Estados para modais e operações
@@ -32,9 +33,11 @@ const HeroList: React.FC = () => {
   const [heroToView, setHeroToView] = useState<Hero | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
 
-  // Filtra os heróis pelo termo de busca (usando nickname)
-  const filteredHeroes = heroes.filter((hero) =>
-    hero.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filtra os heróis pelo termo de busca (por nickname ou name)
+  const filteredHeroes = heroes.filter(
+    (hero) =>
+      hero.nickname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      hero.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Paginação: calcula os índices para exibir apenas os heróis da página atual
@@ -43,13 +46,18 @@ const HeroList: React.FC = () => {
   const currentHeroes = filteredHeroes.slice(indexOfFirstHero, indexOfLastHero);
   const totalPages = Math.ceil(filteredHeroes.length / heroesPerPage);
 
-  // Função unificada para ativação/desativação via slider
+  // Função unificada para ativação/desativação via slider:
+  // Se o herói estiver ativo, desativa-o imediatamente;
+  // Se estiver inativo, abre a modal para confirmar a ativação.
   const handleSliderToggle = (hero: Hero) => {
     if (hero.is_active) {
-      // Se estiver ativo, desativa imediatamente
-      toggleStatus(hero.id ?? "", false);
+      toggleStatus(hero.id ?? "", false)
+        .then(() => toast.success("Herói desativado com sucesso!"))
+        .catch((error) => {
+          console.error("Erro ao desativar herói:", error);
+          toast.error("Erro ao desativar herói.");
+        });
     } else {
-      // Se estiver inativo, abre a modal para confirmar ativação
       setHeroToActivate(hero);
       setIsActivateModalOpen(true);
     }
@@ -63,7 +71,13 @@ const HeroList: React.FC = () => {
   // Confirma ativação de herói (na modal)
   const confirmActivateHero = async () => {
     if (heroToActivate?.id) {
-      toggleStatus(heroToActivate.id, true);
+      try {
+        await toggleStatus(heroToActivate.id, true);
+        toast.success("Herói ativado com sucesso!");
+      } catch (error) {
+        console.error("Erro ao ativar herói:", error);
+        toast.error("Erro ao ativar herói.");
+      }
       setIsActivateModalOpen(false);
       setHeroToActivate(null);
     }
@@ -84,9 +98,15 @@ const HeroList: React.FC = () => {
   // Após criação/edição, recarrega os heróis e fecha a modal
   const handleHeroSubmit = async () => {
     setIsLoading(true);
-    await fetchHeroes();
-    setIsLoading(false);
-    setIsCreateHeroModalOpen(false);
+    try {
+      await fetchHeroes();
+    } catch (error) {
+      console.error("Erro ao salvar herói:", error);
+      toast.error("Erro ao salvar herói. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+      setIsCreateHeroModalOpen(false);
+    }
   };
 
   // Abre a modal de exclusão
@@ -98,10 +118,17 @@ const HeroList: React.FC = () => {
   // Confirma a exclusão
   const confirmDeleteHero = async () => {
     if (heroToDelete?.id) {
-      await deleteHero(heroToDelete.id);
-      await fetchHeroes();
-      setIsDeleteModalOpen(false);
-      setHeroToDelete(null);
+      try {
+        await deleteHero(heroToDelete.id);
+        await fetchHeroes();
+        toast.success("Herói excluído com sucesso!");
+      } catch (error) {
+        console.error("Erro ao excluir herói:", error);
+        toast.error("Erro ao excluir herói. Tente novamente.");
+      } finally {
+        setIsDeleteModalOpen(false);
+        setHeroToDelete(null);
+      }
     }
   };
 

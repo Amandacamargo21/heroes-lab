@@ -9,6 +9,8 @@ export interface Hero {
     main_power: string;
     avatar_url: string;
     is_active: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 // Busca todos os heróis

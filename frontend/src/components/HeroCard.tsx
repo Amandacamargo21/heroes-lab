@@ -111,7 +111,7 @@ const HeroCard: React.FC<HeroCardProps> = ({
       </div>
 
       {/* Nome do Herói */}
-      <h3 className="hero-name" onClick={onClick}>{hero.name}</h3>
+      <h3 className="hero-name" onClick={onClick}>{hero.nickname}</h3>
     </div>
   );
 };
