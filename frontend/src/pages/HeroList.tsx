@@ -3,6 +3,7 @@ import { Hero, deleteHero } from "../services/heroService";
 import HeroCard from "../components/HeroCard";
 import Modal from "../components/Modal";
 import CreateHero from "./CreateHero";
+import HeroDetails from "../components/HeroDetails"; // Importe o HeroDetails
 import { useHeroes } from "../hooks/useHeroes";
 import "../assets/styles.css";
 
@@ -27,6 +28,10 @@ const HeroList: React.FC = () => {
   const [heroToDelete, setHeroToDelete] = useState<Hero | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
+  // Estados para exibir os detalhes do herói
+  const [heroToView, setHeroToView] = useState<Hero | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
+
   // Filtra os heróis pelo termo de busca (usando nickname)
   const filteredHeroes = heroes.filter((hero) =>
     hero.nickname.toLowerCase().includes(searchTerm.toLowerCase())
@@ -38,15 +43,13 @@ const HeroList: React.FC = () => {
   const currentHeroes = filteredHeroes.slice(indexOfFirstHero, indexOfLastHero);
   const totalPages = Math.ceil(filteredHeroes.length / heroesPerPage);
 
-  // Função unificada para ativação/desativação via slider:
-  // Se o herói estiver ativado, desativa imediatamente;
-  // Se estiver desativado, abre a modal para confirmar ativação.
+  // Função unificada para ativação/desativação via slider
   const handleSliderToggle = (hero: Hero) => {
     if (hero.is_active) {
-      // Desativa imediatamente
+      // Se estiver ativo, desativa imediatamente
       toggleStatus(hero.id ?? "", false);
     } else {
-      // Abre modal para confirmar ativação
+      // Se estiver inativo, abre a modal para confirmar ativação
       setHeroToActivate(hero);
       setIsActivateModalOpen(true);
     }
@@ -102,6 +105,12 @@ const HeroList: React.FC = () => {
     }
   };
 
+  // Abre a modal de detalhes ao clicar no card
+  const handleViewDetails = (hero: Hero) => {
+    setHeroToView(hero);
+    setIsDetailsModalOpen(true);
+  };
+
   return (
     <div className="hero-list-container">
       <h2 className="hero-title">Heróis</h2>
@@ -125,7 +134,6 @@ const HeroList: React.FC = () => {
           <button className="search-button">Buscar</button>
         </div>
 
-        {/* Indicador de carregamento */}
         {isLoading && <div className="loading-indicator">Carregando...</div>}
 
         {/* Lista de Heróis */}
@@ -135,7 +143,7 @@ const HeroList: React.FC = () => {
               <HeroCard
                 key={hero.id || ""}
                 hero={hero}
-                onClick={() => {}}
+                onClick={() => handleViewDetails(hero)}
                 onEdit={() => handleEditHero(hero)}
                 onDelete={() => handleDeleteHero(hero)}
                 onSliderToggle={() => handleSliderToggle(hero)}
@@ -237,6 +245,17 @@ const HeroList: React.FC = () => {
           heroData={heroToEdit}
           onClose={() => setIsCreateHeroModalOpen(false)}
           onSubmit={handleHeroSubmit}
+        />
+      </Modal>
+
+      {/* Modal para exibir detalhes do herói */}
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+      >
+        <HeroDetails
+          hero={heroToView}
+          onClose={() => setIsDetailsModalOpen(false)}
         />
       </Modal>
     </div>

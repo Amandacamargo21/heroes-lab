@@ -45,9 +45,7 @@ const HeroCard: React.FC<HeroCardProps> = ({
 
   return (
     <div
-      className={`hero-card ${hero.is_active ? "" : "inactive"}`}
-      onClick={onClick}
-    >
+      className={`hero-card ${hero.is_active ? "" : "inactive"}`}>
       {/* Overlay do spinner (centralizado no card) */}
       {loadingToggle === hero.id && (
         <div className="spinner-overlay">
@@ -108,12 +106,12 @@ const HeroCard: React.FC<HeroCardProps> = ({
       )}
 
       {/* Avatar do Herói */}
-      <div className="hero-avatar">
+      <div className="hero-avatar" onClick={onClick}>
         <img src={hero.avatar_url} alt={hero.name} />
       </div>
 
       {/* Nome do Herói */}
-      <h3 className="hero-name">{hero.name}</h3>
+      <h3 className="hero-name" onClick={onClick}>{hero.name}</h3>
     </div>
   );
 };
