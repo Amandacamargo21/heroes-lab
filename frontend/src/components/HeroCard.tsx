@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Hero } from "../services/heroService";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaTrash, FaEdit, FaSpinner } from "react-icons/fa";
 import { MdMoreVert } from "react-icons/md";
 
 interface HeroCardProps {
@@ -35,8 +35,26 @@ const HeroCard: React.FC<HeroCardProps> = ({
     onMenuToggle();
   };
 
+  // Função auxiliar que executa uma ação e fecha o menu após 1 segundo
+  const handleAction = (action: () => void) => {
+    action();
+    setTimeout(() => {
+      setLocalMenuOpen(false);
+    }, 1000);
+  };
+
   return (
-    <div className={`hero-card ${hero.is_active ? "" : "inactive"}`} onClick={onClick}>
+    <div
+      className={`hero-card ${hero.is_active ? "" : "inactive"}`}
+      onClick={onClick}
+    >
+      {/* Overlay do spinner (centralizado no card) */}
+      {loadingToggle === hero.id && (
+        <div className="spinner-overlay">
+          <FaSpinner className="spinner-icon" />
+        </div>
+      )}
+
       {/* Botão de Menu */}
       <button
         className={`menu-button ${localMenuOpen ? "menu-active" : ""}`}
@@ -81,7 +99,7 @@ const HeroCard: React.FC<HeroCardProps> = ({
                 type="checkbox"
                 checked={hero.is_active}
                 disabled={loadingToggle === hero.id}
-                onChange={() => onSliderToggle(hero)}
+                onChange={() => handleAction(() => onSliderToggle(hero))}
               />
               <span className="slider"></span>
             </label>
