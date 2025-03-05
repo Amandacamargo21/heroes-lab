@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Hero } from "../services/heroService";
 import { FaTrash, FaEdit, FaSpinner } from "react-icons/fa";
 import { MdMoreVert } from "react-icons/md";
+import  "../assets/heroCard.css";
+
 
 interface HeroCardProps {
   key: string;

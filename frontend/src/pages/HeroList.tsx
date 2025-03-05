@@ -3,9 +3,9 @@ import { Hero, deleteHero } from "../services/heroService";
 import HeroCard from "../components/HeroCard";
 import Modal from "../components/Modal";
 import CreateHero from "./CreateHero";
-import HeroDetails from "../components/HeroDetails"; // Importa o HeroDetails
+import HeroDetails from "../components/HeroDetails";
 import { useHeroes } from "../hooks/useHeroes";
-import "../assets/styles.css";
+import "../assets/herolist.css";
 import { toast } from "react-toastify";
 
 const HeroList: React.FC = () => {
@@ -14,9 +14,11 @@ const HeroList: React.FC = () => {
 
   // Estados para modais e operações
   const [heroToActivate, setHeroToActivate] = useState<Hero | null>(null);
-  const [isActivateModalOpen, setIsActivateModalOpen] = useState<boolean>(false);
+  const [isActivateModalOpen, setIsActivateModalOpen] =
+    useState<boolean>(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-  const [isCreateHeroModalOpen, setIsCreateHeroModalOpen] = useState<boolean>(false);
+  const [isCreateHeroModalOpen, setIsCreateHeroModalOpen] =
+    useState<boolean>(false);
   const [heroToEdit, setHeroToEdit] = useState<Hero | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -196,17 +198,19 @@ const HeroList: React.FC = () => {
           >
             &lsaquo;
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-            <button
-              key={pageNum}
-              onClick={() => setCurrentPage(pageNum)}
-              className={`pagination-number ${
-                currentPage === pageNum ? "active" : ""
-              }`}
-            >
-              {pageNum}
-            </button>
-          ))}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+            (pageNum) => (
+              <button
+                key={pageNum}
+                onClick={() => setCurrentPage(pageNum)}
+                className={`pagination-number ${
+                  currentPage === pageNum ? "active" : ""
+                }`}
+              >
+                {pageNum}
+              </button>
+            )
+          )}
           <button
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
@@ -268,6 +272,10 @@ const HeroList: React.FC = () => {
         isOpen={isCreateHeroModalOpen}
         onClose={() => setIsCreateHeroModalOpen(false)}
       >
+        <h4 className="text-start">
+          {heroToEdit ? "Editar Herói" : "Criar de Herói"}
+        </h4>
+        <hr />
         <CreateHero
           heroData={heroToEdit}
           onClose={() => setIsCreateHeroModalOpen(false)}
