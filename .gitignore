@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 backend/.env
 .env
+/coverage
+backend/src/coverage
+backend/coverage

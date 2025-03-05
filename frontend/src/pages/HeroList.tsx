@@ -273,7 +273,7 @@ const HeroList: React.FC = () => {
         onClose={() => setIsCreateHeroModalOpen(false)}
       >
         <h4 className="text-start">
-          {heroToEdit ? "Editar Herói" : "Criar de Herói"}
+          {heroToEdit ? "Editar Herói" : "Criar Herói"}
         </h4>
         <hr />
         <CreateHero

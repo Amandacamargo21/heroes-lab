@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import upload from "../services/s3Service"; // Importando o serviço de upload configurado
+import { upload } from "../services/s3Service"; 
 
 const router = Router();
 

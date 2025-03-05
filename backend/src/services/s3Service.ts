@@ -1,10 +1,12 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import dotenv from "dotenv";
 
-dotenv.config(); 
+dotenv.config(); // Carregar variáveis do .env
 
+// Configuração do S3Client (AWS SDK v3)
 const s3 = new S3Client({
   region: process.env.AWS_REGION as string,
   credentials: {
@@ -13,6 +15,7 @@ const s3 = new S3Client({
   },
 });
 
+// Configuração do upload para o S3
 const upload = multer({
   storage: multerS3({
     s3,
@@ -21,9 +24,10 @@ const upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: (req, file, cb) => {
-      cb(null, Date.now().toString() + "-" + file.originalname);
+      cb(null, `${Date.now()}-${file.originalname}`);
     },
   }),
 });
 
-export default upload;
+
+export {s3, upload};

@@ -7,11 +7,11 @@
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": "curiti21",
-    "database": "hero_lab_test",
-    "host": "localhost",
-    "dialect": "mysql"
+    "username": "",
+    "password": "",
+    "database": "test-db",
+    "host": "",
+    "dialect": "sqlite"
   },
   "production": {
     "username": "root",

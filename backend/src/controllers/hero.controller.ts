@@ -15,17 +15,26 @@ const s3 = new S3Client({
 });
 
 // Função para deletar imagem do S3
-const deleteImageFromS3 = async (imageUrl: string) => {
+export const deleteImageFromS3 = async (imageUrl: string) => {
   if (!imageUrl) return;
   const bucketName = process.env.AWS_BUCKET_NAME!;
-  const key = imageUrl.split("/").pop(); // Obtém o nome do arquivo no S3
+  const key = imageUrl.split("/").pop(); 
+
+  console.log(`Tentando deletar imagem: ${imageUrl} (key: ${key})`); 
+
+  if (!key) {
+    console.error("Erro ao deletar imagem: Nome do arquivo não encontrado.");
+    return;
+  }
 
   try {
-    await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: key! }));
+    await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: key }));
+    console.log(`Imagem deletada do S3: ${key}`);
   } catch (error) {
     console.error("Erro ao deletar imagem do S3:", error);
   }
 };
+
 
 // Listar heróis
 export const getHeroes = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -121,23 +130,46 @@ export const updateHero = async (req: Request, res: Response, next: NextFunction
 };
 
 // Remover imagem de um herói
+// export const deleteHeroImage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+//   try {
+//     const { id } = req.params;
+//     const hero = await Hero.findByPk(id);
+//     if (!hero || !hero.avatar_url) {
+//       res.status(404).json({ message: "Imagem não encontrada!" });
+//       return;
+//     }
+
+//     await deleteImageFromS3(hero.avatar_url);
+//     await hero.update({ avatar_url: null });
+
+//     res.status(200).json({ message: "Imagem removida com sucesso!" });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 export const deleteHeroImage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { id } = req.params;
     const hero = await Hero.findByPk(id);
+    
     if (!hero || !hero.avatar_url) {
+      console.error("Imagem não encontrada!");
       res.status(404).json({ message: "Imagem não encontrada!" });
       return;
     }
-
+    
     await deleteImageFromS3(hero.avatar_url);
     await hero.update({ avatar_url: null });
-
+    
+    console.log("Imagem deletada com sucesso!");
+    
     res.status(200).json({ message: "Imagem removida com sucesso!" });
   } catch (error) {
     next(error);
   }
 };
+
 
 // Excluir herói (deletando a imagem antes)
 export const deleteHero = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
