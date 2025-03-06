@@ -25,9 +25,9 @@ const HeroCard: React.FC<HeroCardProps> = ({
   onDelete,
   onSliderToggle,
   onMenuToggle,
-  menuOpen,
+  menuOpen: _menuOpen,
   loadingToggle,
-  loadingActivate,
+  loadingActivate: _loadingActivate,
 }) => {
   const [localMenuOpen, setLocalMenuOpen] = useState(false);
 

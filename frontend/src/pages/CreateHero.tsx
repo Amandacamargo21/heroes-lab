@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 interface CreateHeroProps {
   onClose: () => void;
   heroData?: Hero | null;
-  onSubmit: () => void; // Função chamada após criação ou edição
+  onSubmit: () => void; 
 }
 
 const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData, onSubmit }) => {
@@ -26,7 +26,7 @@ const CreateHero: React.FC<CreateHeroProps> = ({ onClose, heroData, onSubmit }) 
     }
   );
   const [uploading, setUploading] = useState(false);
-  const [submitted, setSubmitted] = useState(false); // flag para evitar duplicação
+  const [submitted, setSubmitted] = useState(false); 
 
   useEffect(() => {
     if (heroData) {
